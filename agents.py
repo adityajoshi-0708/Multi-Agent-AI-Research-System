@@ -1,16 +1,20 @@
 from langchain.agents import create_agent
-from langchain_mistralai.chat_models import ChatMistralAI
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from tools import web_search , scrape_url 
 from dotenv import load_dotenv
 from tenacity import retry, stop_after_attempt, wait_exponential
+import os
 
 load_dotenv()
 
-#model setup with retry logic for rate limits
-llm = ChatMistralAI(
-    model="mistral-large-latest", 
+# Model setup using GitHub's free OpenAI inference endpoint
+# Uses: https://models.github.ai/inference with GitHub token
+llm = ChatOpenAI(
+    model="openai/gpt-4o-mini",
+    api_key=os.getenv("GITHUB_TOKEN"),
+    base_url="https://models.github.ai/inference",
     temperature=0,
     max_retries=3,
 )
